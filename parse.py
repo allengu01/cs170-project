@@ -1,4 +1,5 @@
 import Task
+import os
 
 def read_input_file(path: str):
     """
@@ -160,7 +161,11 @@ def read_output_file(path: str):
             task_ids_scheduled.append(task_id)
     
     return task_ids_scheduled
-    
+
+def read_output_file(path):
+    with open(path, 'r') as output_file:
+        return list(map(int, output_file.readlines()))    
+
 def write_output_file(path: str, task_ids):
     """
     Takes a path and list of task_ids and 
@@ -189,6 +194,8 @@ def write_output_file(path: str, task_ids):
 
         output_lines.append("{}\n".format(str(task_id)))
 
+    # if not os.path.exists(path):
+        
     output_file = open(path, 'w')
     output_file.writelines(output_lines)
     output_file.close()
