@@ -11,12 +11,24 @@ def solve(tasks):
         output: list of igloos in order of polishing  
     """
     tasks.sort(key=lambda task: -task.get_max_benefit())
-    return [task.get_task_id() for task in tasks]
+    t = 0
+    output = []
+    for task in tasks:
+        if t + task.get_duration() > 1440:
+            continue
+        output.append(task.get_task_id())
+        t += task.get_duration()
+    return output
 
 
 # Here's an example of how to run your solver.
-dir_name = "greedy_benefit"
+solver_name = "greedy_benefit_deadline"
 if __name__ == '__main__':
+    if not os.path.exists('all_outputs/{}'.format(solver_name)):
+        os.mkdir('all_outputs/{}'.format(solver_name))
+        os.mkdir('all_outputs/{}/small'.format(solver_name))
+        os.mkdir('all_outputs/{}/medium'.format(solver_name))
+        os.mkdir('all_outputs/{}/large'.format(solver_name))
     for size in os.listdir('inputs/'):
         if size not in ['small', 'medium', 'large']:
             continue
@@ -24,7 +36,7 @@ if __name__ == '__main__':
             if size not in input_file:
                 continue
             input_path = 'inputs/{}/{}'.format(size, input_file)
-            output_path = 'all_outputs/{}/{}/{}.out'.format(dir_name, size, input_file[:-3])
+            output_path = 'all_outputs/{}/{}/{}.out'.format(solver_name, size, input_file[:-3])
             print(input_path, output_path)
             tasks = read_input_file(input_path)
             output = solve(tasks)

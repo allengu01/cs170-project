@@ -1,4 +1,4 @@
-import pickle, os
+import pickle, os, shutil
 import pandas as pd
 import numpy as np
 
@@ -9,6 +9,7 @@ def gen_column_names():
     for size in sizes:
         for i in range(1, n):
             columns.append("{}-{}".format(size, i))
+    columns.remove('small-184')
     return columns
 
 def create_leaderboard():
@@ -57,7 +58,8 @@ def update_rankings():
 
     for col in leaderboard:
         scores = np.array(leaderboard[col])
-        order = scores.argsort()
+        neg_scores = -scores
+        order = neg_scores.argsort()
         ranks = order.argsort() + 1
         rankings[col] = ranks
 
@@ -78,9 +80,16 @@ def save_scores(solver_name, scores):
         df[input_name][solver_name] = scores[input_name]
     save_leaderboard(df)
     save_leaderboard_to_csv(df)
-    update_rankings()
+
+def get_best_outputs():
+    df = load_leaderboard()
+    solver_names = list(df.index)
+    for input in df:
+        best_solver = solver_names[np.argmax(df[input].values)]
+        print(input, best_solver)
+        size = input.split('-')[0]
+        shutil.copyfile('all_outputs/{}/{}/{}.out'.format(best_solver, size, input), 'outputs/{}/{}.out'.format(size, input))
 
 if __name__ == "__main__":
-    df = create_leaderboard()
-    save_leaderboard(df)
-    save_leaderboard_to_csv(df)
+    update_rankings()
+    get_best_outputs()

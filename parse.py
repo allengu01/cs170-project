@@ -164,7 +164,11 @@ def read_output_file(path: str):
 
 def read_output_file(path):
     with open(path, 'r') as output_file:
-        return list(map(int, output_file.readlines()))    
+        return list(map(int, output_file.readlines()))
+
+def read_best_output_file(input):
+    input_size = input.split('-')[0]
+    return read_output_file('outputs/{}/{}.out'.format(input_size, input))
 
 def write_output_file(path: str, task_ids):
     """

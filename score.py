@@ -7,19 +7,14 @@ def compute_score(tasks, order):
     score = 0
     for task_id in order:
         task = tasks[task_id - 1]
-        t += task.get_duration()
-        score += task.get_late_benefit(t)
+        if t + task.get_duration() <= 1440:
+            t += task.get_duration()
+            score += task.get_late_benefit(t - task.get_deadline())
     return score
 
 # Here's an example of how to run your solver.
-solver_name = "greedy_benefit_deadline"
+solver_name = "basic_genetic"
 if __name__ == '__main__':
-    if not os.path.exists('all_outputs/{}'.format(solver_name)):
-        os.mkdir('all_outputs/{}'.format(solver_name))
-        os.mkdir('all_outputs/{}/small'.format(solver_name))
-        os.mkdir('all_outputs/{}/medium'.format(solver_name))
-        os.mkdir('all_outputs/{}/large'.format(solver_name))
-
     scores = {}
     for size in os.listdir('inputs/'):
         if size not in ['small', 'medium', 'large']:
