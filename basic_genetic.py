@@ -6,19 +6,11 @@ import numpy as np
 import os
 
 config = {
-<<<<<<< HEAD
     "NUM_ITERATIONS": 10000,
     "POPULATION_SIZE": 50,
     "CROSSOVER_SIZE": 25,
     "MUTATION_RATE": 0.2,
     "THRESHOLD_FITNESS": 10000
-=======
-    "NUM_ITERATIONS": 100,
-    "POPULATION_SIZE": 50,
-    "CROSSOVER_SIZE": 25,
-    "MUTATION_RATE": 0.5,
-    "THRESHOLD_FITNESS": 5300
->>>>>>> 0bf8bffe6592781d71c126b4bc842a8e8a912590
 }
 
 # class Genome:
@@ -188,7 +180,6 @@ if __name__ == '__main__':
         os.mkdir('all_outputs/{}/large'.format(solver_name))
 
     # FOR SOLVING ALL INPUTS
-<<<<<<< HEAD
     for size in os.listdir('inputs/'):
         if size not in ['small', 'medium', 'large']:
             continue
@@ -207,26 +198,6 @@ if __name__ == '__main__':
                     best_output = np.append(best_output, task.get_task_id())
             output = solve(tasks, best_output)
             write_output_file(output_path, output)
-=======
-    # for size in os.listdir('inputs/'):
-    #     if size not in ['small', 'medium', 'large']:
-    #         continue
-    #     for input_file in os.listdir('inputs/{}/'.format(size)):
-    #         if size not in input_file:
-    #             continue
-    #         if size != 'large':
-    #             continue
-    #         input_path = 'inputs/{}/{}'.format(size, input_file)
-    #         output_path = 'all_outputs/{}/{}/{}.out'.format(solver_name, size, input_file[:-3])
-    #         print(input_path, output_path)
-    #         tasks = read_input_file(input_path)
-    #         best_output = np.array(read_best_output_file(input_file[:-3]), dtype="int")
-    #         for task in tasks:
-    #             if task.get_task_id() not in best_output:
-    #                 best_output = np.append(best_output, task.get_task_id())
-    #         output = solve(tasks, best_output)
-    #         write_output_file(output_path, output)
->>>>>>> 0bf8bffe6592781d71c126b4bc842a8e8a912590
 
     # FOR SOLVING ONE INPUT
     input_file = "large-160.in"

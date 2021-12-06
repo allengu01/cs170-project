@@ -13,7 +13,7 @@ def compute_score(tasks, order):
     return score
 
 # Here's an example of how to run your solver.
-solver_name = "greedy_opport"
+solver_name = "basic_genetic"
 if __name__ == '__main__':
     scores = {}
     for size in os.listdir('inputs/'):
