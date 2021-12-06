@@ -6,7 +6,7 @@ import numpy as np
 import os
 
 config = {
-    "NUM_ITERATIONS": 1000,
+    "NUM_ITERATIONS": 10000,
     "POPULATION_SIZE": 50,
     "CROSSOVER_SIZE": 25,
     "MUTATION_RATE": 0.2,
@@ -168,6 +168,8 @@ if __name__ == '__main__':
             continue
         for input_file in os.listdir('inputs/{}/'.format(size)):
             if size not in input_file:
+                continue
+            if size != 'large':
                 continue
             input_path = 'inputs/{}/{}'.format(size, input_file)
             output_path = 'all_outputs/{}/{}/{}.out'.format(solver_name, size, input_file[:-3])
