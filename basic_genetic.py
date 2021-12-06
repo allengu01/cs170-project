@@ -3,14 +3,14 @@
 from parse import read_input_file, write_output_file, read_best_output_file
 from score import compute_score
 import numpy as np
-import os
+import os, sys
 
 config = {
-    "NUM_ITERATIONS": 10000,
-    "POPULATION_SIZE": 50,
+    "NUM_ITERATIONS": 1000,
+    "POPULATION_SIZE": 1000,
     "CROSSOVER_SIZE": 25,
     "MUTATION_RATE": 0.2,
-    "THRESHOLD_FITNESS": 5300
+    "THRESHOLD_FITNESS": 100000
 }
 
 # class Genome:
@@ -83,16 +83,17 @@ class Population:
     def best_genome(self):
         return self.genomes[np.argmax(self.fitnesses)]
 
-    def selection(self, k=5):
-        selected_index = np.argmax(self.fitnesses[np.random.randint(0, self.population_size, size=k)])
-        return self.genomes[selected_index]
+    def selection(self, k=2):
+        candidates = [np.random.randint(0, self.population_size) for i in range(k)]
+        winner = max(candidates, key=lambda i: self.fitnesses[i])
+        return self.genomes[winner]
 
-    def select_parents(self, fitness, num_parents):
-        top_genome_ids = np.argpartition(fitness, -num_parents)[-num_parents:]
+    def elite(self, num_parents):
+        top_genome_ids = np.argpartition(self.fitnesses, -num_parents)[-num_parents:]
         return [self.genomes[i] for i in top_genome_ids]
 
     def crossover(self, genome1, genome2):
-        split_point1, split_point2 = np.random.randint(0, len(genome1), size=2)
+        split_point1, split_point2 = np.random.randint(0, len(genome1)), np.random.randint(0, len(genome1))
         left_split, right_split = min(split_point1, split_point2), max(split_point1, split_point2)
         g1_cross = genome1[left_split:right_split]
         g2_cross = genome2[~np.in1d(genome2, g1_cross)]
@@ -135,10 +136,13 @@ def solve(tasks, initial_genome=np.array([], dtype="int")):
         population = Population.random_population(tasks, config["POPULATION_SIZE"])
     else:
         population = Population.population_from_initial_order(tasks, config["POPULATION_SIZE"], initial_genome)
+    print(population)
+    print(population.genomes)
     for i in range(config["NUM_ITERATIONS"]):
         population = population.next_population(config["MUTATION_RATE"])
-        if (i + 1) % 100 == 0:
+        if (i + 1) % 25 == 0:
             print(population)
+            print(population.genomes)
         if np.max(population.fitnesses) >= config["THRESHOLD_FITNESS"]:
             break
     best_genome = population.best_genome()
@@ -163,35 +167,33 @@ if __name__ == '__main__':
         os.mkdir('all_outputs/{}/large'.format(solver_name))
 
     # FOR SOLVING ALL INPUTS
-    for size in os.listdir('inputs/'):
-        if size not in ['small', 'medium', 'large']:
-            continue
-        for input_file in os.listdir('inputs/{}/'.format(size)):
-            if size not in input_file:
-                continue
-            if size != 'large':
-                continue
-            input_path = 'inputs/{}/{}'.format(size, input_file)
-            output_path = 'all_outputs/{}/{}/{}.out'.format(solver_name, size, input_file[:-3])
-            print(input_path, output_path)
-            tasks = read_input_file(input_path)
-            best_output = np.array(read_best_output_file(input_file[:-3]), dtype="int")
-            for task in tasks:
-                if task.get_task_id() not in best_output:
-                    best_output = np.append(best_output, task.get_task_id())
-            output = solve(tasks, best_output)
-            write_output_file(output_path, output)
+    # for size in os.listdir('inputs/'):
+    #     if size not in ['small', 'medium', 'large']:
+    #         continue
+    #     for input_file in os.listdir('inputs/{}/'.format(size)):
+    #         if size not in input_file:
+    #             continue
+    #         input_path = 'inputs/{}/{}'.format(size, input_file)
+    #         output_path = 'all_outputs/{}/{}/{}.out'.format(solver_name, size, input_file[:-3])
+    #         print(input_path, output_path)
+    #         tasks = read_input_file(input_path)
+    #         best_output = np.array(read_best_output_file(input_file[:-3]), dtype="int")
+    #         for task in tasks:
+    #             if task.get_task_id() not in best_output:
+    #                 best_output = np.append(best_output, task.get_task_id())
+    #         output = solve(tasks, best_output)
+    #         write_output_file(output_path, output)
 
     # FOR SOLVING ONE INPUT
-    # input_file = "large-160.in"
-    # input_size = input_file.split('-')[0]
-    # input_path = 'inputs/{}/{}'.format(input_size, input_file)
-    # output_path = 'all_outputs/{}/{}/{}.out'.format(solver_name, input_size, input_file[:-3])
-    # tasks = read_input_file(input_path)
-    # best_output = np.array(read_best_output_file(input_file[:-3]), dtype="int")
-    # for task in tasks:
-    #     if task.get_task_id() not in best_output:
-    #         best_output = np.append(best_output, task.get_task_id())
-    # output = solve(tasks, best_output)
+    input_file = "large-160.in"
+    input_size = input_file.split('-')[0]
+    input_path = 'inputs/{}/{}'.format(input_size, input_file)
+    output_path = 'all_outputs/{}/{}/{}.out'.format(solver_name, input_size, input_file[:-3])
+    tasks = read_input_file(input_path)
+    best_output = np.array(read_best_output_file(input_file[:-3]), dtype="int")
+    for task in tasks:
+        if task.get_task_id() not in best_output:
+            best_output = np.append(best_output, task.get_task_id())
+    output = solve(tasks)
     # write_output_file(output_path, output)
 
