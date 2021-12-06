@@ -6,10 +6,10 @@ import numpy as np
 import os
 
 config = {
-    "NUM_ITERATIONS": 100000,
-    "POPULATION_SIZE": 200,
+    "NUM_ITERATIONS": 1000,
+    "POPULATION_SIZE": 50,
     "CROSSOVER_SIZE": 25,
-    "MUTATION_RATE": 0.8,
+    "MUTATION_RATE": 0.2,
     "THRESHOLD_FITNESS": 5300
 }
 
@@ -68,7 +68,8 @@ class Population:
 
     @staticmethod
     def population_from_initial_order(tasks, population_size, order):
-        population = Population(tasks, population_size, np.tile(order, (population_size, 1)))
+        population = Population.random_population(tasks, population_size)
+        population.genomes[0,:] = order
         population.fitnesses = population.calculate_population_fitness()
         return population
     
@@ -119,8 +120,9 @@ class Population:
         return next_pop
 
     def __str__(self):
-        return 'Population {}: Fitness - {}, Best Genome - {}'.format(self.number, np.max(self.fitnesses), self.best_genome())
-    
+        # return 'Population {}: Fitness - {}, Best Genome - {}'.format(self.number, np.max(self.fitnesses), self.best_genome())
+        return 'Population {}: Fitness - {}'.format(self.number, np.max(self.fitnesses))
+
 
 def solve(tasks, initial_genome=np.array([], dtype="int")):
     """
@@ -135,7 +137,7 @@ def solve(tasks, initial_genome=np.array([], dtype="int")):
         population = Population.population_from_initial_order(tasks, config["POPULATION_SIZE"], initial_genome)
     for i in range(config["NUM_ITERATIONS"]):
         population = population.next_population(config["MUTATION_RATE"])
-        if (i + 1) % 1000 == 0:
+        if (i + 1) % 100 == 0:
             print(population)
         if np.max(population.fitnesses) >= config["THRESHOLD_FITNESS"]:
             break
@@ -161,33 +163,33 @@ if __name__ == '__main__':
         os.mkdir('all_outputs/{}/large'.format(solver_name))
 
     # FOR SOLVING ALL INPUTS
-    # for size in os.listdir('inputs/'):
-    #     if size not in ['small', 'medium', 'large']:
-    #         continue
-    #     for input_file in os.listdir('inputs/{}/'.format(size)):
-    #         if size not in input_file:
-    #             continue
-    #         input_path = 'inputs/{}/{}'.format(size, input_file)
-    #         output_path = 'all_outputs/{}/{}/{}.out'.format(solver_name, size, input_file[:-3])
-    #         print(input_path, output_path)
-    #         tasks = read_input_file(input_path)
-    #         best_output = np.array(read_best_output_file(input_file[:-3]), dtype="int")
-    #         for task in tasks:
-    #             if task.get_task_id() not in best_output:
-    #                 best_output = np.append(best_output, task.get_task_id())
-    #         output = solve(tasks, best_output)
-    #         write_output_file(output_path, output)
+    for size in os.listdir('inputs/'):
+        if size not in ['small', 'medium', 'large']:
+            continue
+        for input_file in os.listdir('inputs/{}/'.format(size)):
+            if size not in input_file:
+                continue
+            input_path = 'inputs/{}/{}'.format(size, input_file)
+            output_path = 'all_outputs/{}/{}/{}.out'.format(solver_name, size, input_file[:-3])
+            print(input_path, output_path)
+            tasks = read_input_file(input_path)
+            best_output = np.array(read_best_output_file(input_file[:-3]), dtype="int")
+            for task in tasks:
+                if task.get_task_id() not in best_output:
+                    best_output = np.append(best_output, task.get_task_id())
+            output = solve(tasks, best_output)
+            write_output_file(output_path, output)
 
     # FOR SOLVING ONE INPUT
-    input_file = "large-160.in"
-    input_size = input_file.split('-')[0]
-    input_path = 'inputs/{}/{}'.format(input_size, input_file)
-    output_path = 'all_outputs/{}/{}/{}.out'.format(solver_name, input_size, input_file[:-3])
-    tasks = read_input_file(input_path)
-    best_output = np.array(read_best_output_file(input_file[:-3]), dtype="int")
-    for task in tasks:
-        if task.get_task_id() not in best_output:
-            best_output = np.append(best_output, task.get_task_id())
-    output = solve(tasks)
-    write_output_file(output_path, output)
+    # input_file = "large-160.in"
+    # input_size = input_file.split('-')[0]
+    # input_path = 'inputs/{}/{}'.format(input_size, input_file)
+    # output_path = 'all_outputs/{}/{}/{}.out'.format(solver_name, input_size, input_file[:-3])
+    # tasks = read_input_file(input_path)
+    # best_output = np.array(read_best_output_file(input_file[:-3]), dtype="int")
+    # for task in tasks:
+    #     if task.get_task_id() not in best_output:
+    #         best_output = np.append(best_output, task.get_task_id())
+    # output = solve(tasks, best_output)
+    # write_output_file(output_path, output)
 
