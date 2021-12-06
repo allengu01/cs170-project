@@ -4,7 +4,10 @@ from parse import read_input_file, write_output_file
 import os
 
 def solve(tasks):
-    #backtracing
+    #backtracing (comparing it to greedy)
+    #maybe using some sort of randomness?
+    #also using some sort of metric (like opptcost) in order to reduce the recursive calls?
+    # integrating herustics somehow ?
     total_sum_left = 0
     time_passed = 0
     for task in tasks:
