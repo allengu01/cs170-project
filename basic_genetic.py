@@ -6,11 +6,11 @@ import numpy as np
 import os
 
 config = {
-    "NUM_ITERATIONS": 1000,
+    "NUM_ITERATIONS": 10000,
     "POPULATION_SIZE": 50,
     "CROSSOVER_SIZE": 25,
     "MUTATION_RATE": 0.2,
-    "THRESHOLD_FITNESS": 5300
+    "THRESHOLD_FITNESS": 10000
 }
 
 # class Genome:
@@ -165,6 +165,8 @@ if __name__ == '__main__':
     # FOR SOLVING ALL INPUTS
     for size in os.listdir('inputs/'):
         if size not in ['small', 'medium', 'large']:
+            continue
+        if size != 'small':
             continue
         for input_file in os.listdir('inputs/{}/'.format(size)):
             if size not in input_file:
