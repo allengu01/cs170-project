@@ -1,6 +1,7 @@
 import pickle, os, shutil
 import pandas as pd
 import numpy as np
+from parse import read_best_output_file, read_output_file
 
 def gen_column_names():
     columns = []
@@ -88,7 +89,10 @@ def get_best_outputs():
         best_solver = solver_names[np.argmax(df[input].values)]
         print(input, best_solver)
         size = input.split('-')[0]
-        shutil.copyfile('all_outputs/{}/{}/{}.out'.format(best_solver, size, input), 'outputs/{}/{}.out'.format(size, input))
+        best_output = read_best_output_file(input)
+        best_solver_path = 'all_outputs/{}/{}/{}.out'.format(best_solver, size, input)
+        best_solver_output = read_output_file(best_solver_path)
+        shutil.copyfile(best_solver_path, 'outputs/{}/{}.out'.format(size, input))
 
 if __name__ == "__main__":
     update_rankings()
