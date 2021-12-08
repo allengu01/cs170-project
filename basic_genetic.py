@@ -7,11 +7,11 @@ import os, sys
 
 config = {
     "NUM_ITERATIONS": 1000,
-    "POPULATION_SIZE": 40,
+    "POPULATION_SIZE": 100,
     "CROSSOVER_SIZE": 25,
     "MUTATION_RATE": 0.8,
     "THRESHOLD_FITNESS": 100000,
-    "ELITISM": 1
+    "ELITISM": 2
 }
 
 # class Genome:
@@ -158,10 +158,6 @@ def solve(tasks, initial_genome=np.array([], dtype="int")):
         best_fitness = np.max(population.fitnesses)
         if prev_fitness == best_fitness:
             stagnation_count += 1
-        if stagnation_count > 100:
-            print("STAGNATED")
-            population.stagnate()
-            stagnation_count = 0
         prev_fitness = best_fitness
         if (i + 1) % 100 == 0:
             print(population)
@@ -189,36 +185,42 @@ if __name__ == '__main__':
         os.mkdir('all_outputs/{}/medium'.format(solver_name))
         os.mkdir('all_outputs/{}/large'.format(solver_name))
 
-    # FOR SOLVING ALL INPUTS
-    for size in os.listdir('inputs/'):
-        if size not in ['small', 'medium', 'large']:
-            continue
-        for input_file in os.listdir('inputs/{}/'.format(size)):
-            if size not in input_file:
-                continue
-            if size != 'medium':
-                continue
-            input_path = 'inputs/{}/{}'.format(size, input_file)
-            output_path = 'all_outputs/{}/{}/{}.out'.format(solver_name, size, input_file[:-3])
-            print(input_path, output_path)
-            tasks = read_input_file(input_path)
-            best_output = np.array(read_best_output_file(input_file[:-3]), dtype="int")
-            for task in tasks:
-                if task.get_task_id() not in best_output:
-                    best_output = np.append(best_output, task.get_task_id())
-            output = solve(tasks, best_output)
-            write_output_file(output_path, output)
+    # # FOR SOLVING ALL INPUTS
+    # improvements = 0
+    # for size in os.listdir('inputs/'):
+    #     if size not in ['small', 'medium', 'large']:
+    #         continue
+    #     for input_file in os.listdir('inputs/{}/'.format(size)):
+    #         if size not in input_file:
+    #             continue
+    #         if size != 'small':
+    #             continue
+    #         input_path = 'inputs/{}/{}'.format(size, input_file)
+    #         output_path = 'all_outputs/{}/{}/{}.out'.format(solver_name, size, input_file[:-3])
+    #         print(input_path, output_path)
+    #         tasks = read_input_file(input_path)
+    #         best_output = np.array(read_best_output_file(input_file[:-3]), dtype="int")
+    #         for task in tasks:
+    #             if task.get_task_id() not in best_output:
+    #                 best_output = np.append(best_output, task.get_task_id())
+    #         output = solve(tasks, best_output)
+    #         output_score = compute_score(tasks, output)
+    #         best_output_score = compute_score(tasks, best_output)
+    #         if output_score > best_output_score:
+    #             improvements += 1
+    #         print("Previous Best:", best_output_score, "New Best:", output_score, "Improvements:", improvements)
+    #         write_output_file(output_path, output)
 
     # FOR SOLVING ONE INPUT
-    # input_file = "medium-1.in"
-    # input_size = input_file.split('-')[0]
-    # input_path = 'inputs/{}/{}'.format(input_size, input_file)
-    # output_path = 'all_outputs/{}/{}/{}.out'.format(solver_name, input_size, input_file[:-3])
-    # tasks = read_input_file(input_path)
-    # best_output = np.array(read_best_output_file(input_file[:-3]), dtype="int")
-    # for task in tasks:
-    #     if task.get_task_id() not in best_output:
-    #         best_output = np.append(best_output, task.get_task_id())
-    # output = solve(tasks, best_output)
-    # write_output_file(output_path, output)
+    input_file = "small-45.in"
+    input_size = input_file.split('-')[0]
+    input_path = 'inputs/{}/{}'.format(input_size, input_file)
+    output_path = 'all_outputs/{}/{}/{}.out'.format(solver_name, input_size, input_file[:-3])
+    tasks = read_input_file(input_path)
+    best_output = np.array(read_best_output_file(input_file[:-3]), dtype="int")
+    for task in tasks:
+        if task.get_task_id() not in best_output:
+            best_output = np.append(best_output, task.get_task_id())
+    output = solve(tasks, best_output)
+    write_output_file(output_path, output)
 

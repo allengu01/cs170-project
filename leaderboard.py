@@ -91,6 +91,8 @@ def get_best_outputs():
         size = input.split('-')[0]
         best_output = read_best_output_file(input)
         best_solver_path = 'all_outputs/{}/{}/{}.out'.format(best_solver, size, input)
+        if not os.path.exists(best_solver_path):
+            continue
         best_solver_output = read_output_file(best_solver_path)
         shutil.copyfile(best_solver_path, 'outputs/{}/{}.out'.format(size, input))
 

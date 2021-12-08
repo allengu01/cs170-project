@@ -41,25 +41,25 @@ if __name__ == '__main__':
         os.mkdir('all_outputs/{}/small'.format(solver_name))
         os.mkdir('all_outputs/{}/medium'.format(solver_name))
         os.mkdir('all_outputs/{}/large'.format(solver_name))
-    for size in os.listdir('inputs/'):
-        if size not in ['small', 'medium', 'large']:
-            continue
-        for input_file in os.listdir('inputs/{}/'.format(size)):
-            if size not in input_file:
-                continue
-            input_path = 'inputs/{}/{}'.format(size, input_file)
-            output_path = 'all_outputs/{}/{}/{}.out'.format(solver_name, size, input_file[:-3])
-            print(input_path, output_path)
-            tasks = read_input_file(input_path)
-            output = solve(tasks)
-            write_output_file(output_path, output)
+    # for size in os.listdir('inputs/'):
+    #     if size not in ['small', 'medium', 'large']:
+    #         continue
+    #     for input_file in os.listdir('inputs/{}/'.format(size)):
+    #         if size not in input_file:
+    #             continue
+    #         input_path = 'inputs/{}/{}'.format(size, input_file)
+    #         output_path = 'all_outputs/{}/{}/{}.out'.format(solver_name, size, input_file[:-3])
+    #         print(input_path, output_path)
+    #         tasks = read_input_file(input_path)
+    #         output = solve(tasks)
+    #         write_output_file(output_path, output)
 
-    # input_file = "medium-1.in"
-    # input_size = input_file.split('-')[0]
-    # input_path = 'inputs/{}/{}'.format(input_size, input_file)
-    # output_path = 'all_outputs/{}/{}/{}.out'.format(solver_name, input_size, input_file[:-3])
-    # tasks = read_input_file(input_path)
-    # tasks_copy = tasks.copy()
+    input_file = "large-160.in"
+    input_size = input_file.split('-')[0]
+    input_path = 'inputs/{}/{}'.format(input_size, input_file)
+    output_path = 'all_outputs/{}/{}/{}.out'.format(solver_name, input_size, input_file[:-3])
+    tasks = read_input_file(input_path)
+    tasks_copy = tasks.copy()
     
-    # output = solve(tasks)
-    # print(output, compute_score(tasks_copy, output))
+    output = solve(tasks)
+    print(output, compute_score(tasks_copy, output))
